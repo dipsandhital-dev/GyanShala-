@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+
+// Calm & Trustworthy
+containerStyles="... bg-blue-50 ring-blue-100 hover:ring-blue-200"
+
+// Elegant & Minimal
+containerStyles="... bg-slate-50 ring-slate-100 hover:ring-slate-200"
+
+// Friendly & Inviting
+containerStyles="... bg-rose-50 ring-rose-100 hover:ring-rose-200"
+
+// Fresh & Natural
+containerStyles="... bg-emerald-50 ring-emerald-100 hover:ring-emerald-200"
+
+/* Smooth scale on logo hover */
+.group:hover .logo-icon {
+  transform: scale(1.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Subtle press effect */
+.active\:bg-gray-200:active {
+  transform: scale(0.98);
+}
