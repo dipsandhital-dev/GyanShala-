@@ -21,25 +21,26 @@
 }
 
 
-// Calm & Trustworthy
-containerStyles="... bg-blue-50 ring-blue-100 hover:ring-blue-200"
-
-// Elegant & Minimal
-containerStyles="... bg-slate-50 ring-slate-100 hover:ring-slate-200"
-
-// Friendly & Inviting
-containerStyles="... bg-rose-50 ring-rose-100 hover:ring-rose-200"
-
-// Fresh & Natural
-containerStyles="... bg-emerald-50 ring-emerald-100 hover:ring-emerald-200"
-
-/* Smooth scale on logo hover */
-.group:hover .logo-icon {
-  transform: scale(1.05);
-  transition: transform 0.2s ease-in-out;
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Subtle press effect */
-.active\:bg-gray-200:active {
-  transform: scale(0.98);
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Focus ring override for nicer outline */
+:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }

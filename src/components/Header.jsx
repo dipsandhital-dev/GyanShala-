@@ -5,11 +5,16 @@ import { Search, X, Menu, ShoppingCart, User } from 'lucide-react';
 
 const Header = () => {
   const [menuOpened, setMenuOpened] = useState(false);
-  const [user, setUser] = useState(true);
   const [dropDownOpen, setDropDownOpen] = useState(false);
 
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+
+  // Check if user is logged in
+  const [user, setUser] = useState(() => {
+    const authUser = localStorage.getItem("authUser");
+    return !!authUser;
+  });
 
   const toggleMenu = () => setMenuOpened(prev => !prev);
   const toggleDropdown = () => setDropDownOpen(prev => !prev);
@@ -25,9 +30,22 @@ const Header = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Listen for storage changes (in case user logs in/out in another tab)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const authUser = localStorage.getItem("authUser");
+      setUser(!!authUser);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const handleLogout = () => {
+    localStorage.removeItem("authUser");
     setUser(false);
     setDropDownOpen(false);
+    navigate("/home");
   };
 
   return (
@@ -98,47 +116,55 @@ const Header = () => {
           {/* User Dropdown — Matched padding with others */}
           <div className="relative" ref={dropdownRef}>
             {user ? (
-              <button
-                onClick={toggleDropdown}
-                className="p-3 rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-colors focus:outline-none"
-                aria-label="User menu"
-                aria-expanded={dropDownOpen}
-              >
-                <User className="h-5.5 w-5.5 text-gray-700 hover:text-indigo-600 transition-colors" />
-              </button>
+              <>
+                <button
+                  onClick={toggleDropdown}
+                  className="p-3 rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-colors focus:outline-none"
+                  aria-label="User menu"
+                  aria-expanded={dropDownOpen}
+                >
+                  <User className="h-5.5 w-5.5 text-gray-700 hover:text-indigo-600 transition-colors" />
+                </button>
+                
+                {/* Dropdown Menu — Improved item padding & rounded corners */}
+                {dropDownOpen && (
+                  <div
+                    className="absolute right-0 mt-3 w-52 bg-white rounded-2xl shadow-xl ring-1 ring-black/5 py-3 z-50 animate-fadeIn overflow-hidden"
+                    role="menu"
+                    aria-orientation="vertical"
+                  >
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-5 py-3 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-sm text-red-600 transition-colors flex items-center gap-3"
+                      role="menuitem"
+                    >
+                      🚪 Logout
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
-              <Link
-                to="/login"
-                className="hidden sm:flex items-center px-5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-sm font-medium text-gray-700 transition-colors shadow-sm"
-              >
-                Login
-              </Link>
-            )}
-
-            {/* Dropdown Menu — Improved item padding & rounded corners */}
-            {user && dropDownOpen && (
-              <div
-                className="absolute right-0 mt-3 w-52 bg-white rounded-2xl shadow-xl ring-1 ring-black/5 py-3 z-50 animate-fadeIn overflow-hidden"
-                role="menu"
-                aria-orientation="vertical"
-              >
-                <button
-                  onClick={() => {
-                    navigate('/my-orders');
-                    setDropDownOpen(false);
-                  }}
-                  className="w-full text-left px-5 py-3 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-sm text-gray-700 transition-colors flex items-center gap-3"
-                  role="menuitem"
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/login"
+                  className="hidden sm:flex items-center px-5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-sm font-medium text-gray-700 transition-colors shadow-sm"
                 >
-                  📦 My Orders
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-5 py-3 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-sm text-red-600 transition-colors flex items-center gap-3"
-                  role="menuitem"
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="hidden sm:flex items-center px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-sm font-medium text-white transition-colors shadow-sm"
                 >
-                  🚪 Logout
-                </button>
+                  Sign Up
+                </Link>
+                {/* Mobile view buttons */}
+                <Link
+                  to="/login"
+                  className="sm:hidden p-3 rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-colors"
+                  aria-label="Login"
+                >
+                  <User className="h-5.5 w-5.5 text-gray-700 hover:text-indigo-600 transition-colors" />
+                </Link>
               </div>
             )}
           </div>
@@ -158,6 +184,25 @@ const Header = () => {
               setMenuOpened={setMenuOpened}
               containerStyles="flex flex-col gap-y-4 text-base font-medium *:py-2.5 *:px-4 *:rounded-xl *:hover:bg-gray-50 transition-all"
             />
+            {/* Add login/signup to mobile menu */}
+            {!user && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <Link
+                  to="/login"
+                  onClick={() => setMenuOpened(false)}
+                  className="block w-full text-center py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  onClick={() => setMenuOpened(false)}
+                  className="block w-full text-center mt-2 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
         </>
       )}
