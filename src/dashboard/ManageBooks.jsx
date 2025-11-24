@@ -9,8 +9,11 @@ import {
   Pencil,
   Trash2
 } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // 👈 Added for SPA navigation
 
 const ManageBooks = () => {
+  const navigate = useNavigate(); // 👈 Initialize navigate
+
   const baseInput =
     "w-full rounded-xl border-gray-300 bg-gray-50 text-gray-900 " +
     "placeholder:text-gray-400 focus:border-teal-500 focus:ring-2 " +
@@ -23,11 +26,8 @@ const ManageBooks = () => {
 
   // Load books data (replace with your actual JSON data loading)
   useEffect(() => {
-    // Simulate API call - replace this with your actual data fetching
     const loadBooksData = async () => {
       try {
-        // Example: fetch('/api/books') or import your JSON file
-        // For now, using dummy data
         const dummyData = [
           {
             id: 1,
@@ -59,7 +59,6 @@ const ManageBooks = () => {
           },
         ];
         
-        // Simulate loading delay
         await new Promise(resolve => setTimeout(resolve, 800));
         setBooks(dummyData);
         setLoading(false);
@@ -92,7 +91,6 @@ const ManageBooks = () => {
     );
     if (confirmDelete) {
       try {
-        // Simulate API call
         setLoading(true);
         await new Promise(resolve => setTimeout(resolve, 500));
         
@@ -128,7 +126,6 @@ const ManageBooks = () => {
             Manage Books
           </h1>
 
-          {/* Enhanced Search UI */}
           <div className="relative w-full md:w-96 group">
             <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
               <Search className="h-5 w-5" />
@@ -281,8 +278,7 @@ const ManageBooks = () => {
                             color="gray"
                             className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg px-4 py-2 transition-all duration-200 hover:scale-105"
                             onClick={() => {
-                              // Navigate to edit page - you'll implement this based on your routing
-                              window.location.href = `/edit-book/${book.id}`;
+                              navigate(`/admin/edit_book/${book.id}`); // ✅ FIXED: Correct SPA route
                             }}
                           >
                             <Pencil className="mr-1 h-4 w-4" />
@@ -305,7 +301,6 @@ const ManageBooks = () => {
             </table>
           </div>
           
-          {/* Results Summary */}
           {filteredBooks.length > 0 && (
             <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
               <p className="text-sm text-gray-600">
